@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diario de Estudio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="contenedor">
+    <header class="encabezado">
+      <p class="etiqueta">Tu ritmo de estudio</p>
+      <h1>Diario de Estudio</h1>
+      <p class="introduccion">Registra cada sesión y mantén el ritmo.</p>
+    </header>
+
+    <section class="rachas" aria-label="Rachas de estudio">
+      <div class="racha" aria-labelledby="titulo-racha">
+        <p id="titulo-racha" class="racha__titulo">Racha actual</p>
+        <p class="racha__numero"><span id="racha">0</span> <span class="racha__unidad">días</span> <span class="racha__icono" aria-hidden="true">🔥</span></p>
+      </div>
+      <div class="racha racha--mejor" aria-labelledby="titulo-mejor-racha">
+        <p id="titulo-mejor-racha" class="racha__titulo">Mejor racha</p>
+        <p class="racha__numero"><span id="mejor-racha">0</span> <span class="racha__unidad">días</span> <span class="racha__icono" aria-hidden="true">🏆</span></p>
+      </div>
+      <div class="racha racha--semana" aria-labelledby="titulo-minutos-semana">
+        <p id="titulo-minutos-semana" class="racha__titulo">Minutos esta semana</p>
+        <p class="racha__numero"><span id="minutos-semana">0</span> <span class="racha__unidad">min</span> <span class="racha__icono" aria-hidden="true">⏱️</span></p>
+      </div>
+      <div class="racha racha--dias" aria-labelledby="titulo-dias-mes">
+        <p id="titulo-dias-mes" class="racha__titulo">Días este mes</p>
+        <p class="racha__numero"><span id="dias-mes">0</span> <span class="racha__unidad">días</span> <span class="racha__icono" aria-hidden="true">📅</span></p>
+      </div>
+    </section>
+
+    <section class="tarjeta meses-destacados" aria-labelledby="titulo-meses-destacados">
+      <h2 id="titulo-meses-destacados">Meses destacados</h2>
+      <div class="meses-destacados__lista">
+        <article class="mes-destacado">
+          <p class="mes-destacado__titulo">Más minutos</p>
+          <p id="mes-mas-minutos" class="mes-destacado__valor">Sin datos</p>
+        </article>
+        <article class="mes-destacado">
+          <p class="mes-destacado__titulo">Más cursos</p>
+          <p id="mes-mas-cursos" class="mes-destacado__valor">Sin datos</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="tarjeta top-sesiones" aria-labelledby="titulo-top-sesiones">
+      <h2 id="titulo-top-sesiones">Sesiones más largas</h2>
+      <div id="top-sesiones" class="top-sesiones__lista">
+        <p class="vacio">Todavía no hay sesiones registradas.</p>
+      </div>
+    </section>
+
+    <section class="tarjeta" aria-labelledby="titulo-formulario">
+      <h2 id="titulo-formulario">Registrar sesión</h2>
+      <form id="formulario-sesion">
+        <div class="campo">
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha" name="fecha" required>
+        </div>
+
+        <div class="campo">
+          <label for="tema">Tema</label>
+          <input type="text" id="tema" name="tema" placeholder="¿Qué has estudiado?" required>
+        </div>
+
+        <div class="campo">
+          <label for="minutos">Minutos</label>
+          <input type="number" id="minutos" name="minutos" min="1" step="1" placeholder="30" required>
+        </div>
+
+        <button type="submit">Guardar sesión</button>
+      </form>
+    </section>
+
+    <section class="sesiones" aria-labelledby="titulo-sesiones">
+      <h2 id="titulo-sesiones">Sesiones</h2>
+      <div id="lista-sesiones" class="lista-sesiones">
+        <p class="vacio">Todavía no hay sesiones registradas.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

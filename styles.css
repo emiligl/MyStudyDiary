@@ -1,0 +1,385 @@
+:root {
+  color-scheme: light;
+  --papel: #f4efe5;
+  --papel-claro: #fffdf8;
+  --tinta: #202c39;
+  --tinta-suave: #65707a;
+  --linea: #d9d2c5;
+  --coral: #d96855;
+  --coral-oscuro: #b94f40;
+  --mostaza: #e5b65d;
+  --menta: #d9eee8;
+  --azul-claro: #e2edf5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.contenedor {
+  width: min(100% - 32px, 760px);
+  margin: 0 auto;
+  padding: 28px 0 64px;
+}
+
+.encabezado {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 22px;
+  border-radius: 22px;
+  padding: 34px;
+  color: var(--papel-claro);
+  background: var(--tinta);
+}
+
+.encabezado::after {
+  position: absolute;
+  right: 34px;
+  bottom: 24px;
+  width: 92px;
+  height: 8px;
+  border-top: 2px solid var(--mostaza);
+  border-bottom: 2px solid var(--mostaza);
+  content: "";
+  opacity: 0.9;
+  transform: rotate(-4deg);
+}
+
+.etiqueta {
+  margin: 0 0 12px;
+  color: var(--mostaza);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+h1 {
+  max-width: 500px;
+  margin-bottom: 10px;
+  font-size: clamp(2.2rem, 8vw, 4rem);
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+}
+
+.introduccion {
+  max-width: 330px;
+  margin-bottom: 0;
+  color: #d8e0e3;
+  line-height: 1.5;
+}
+
+.rachas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.racha,
+.tarjeta,
+.sesiones {
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  background: var(--papel-claro);
+}
+
+.racha {
+  min-width: 0;
+  min-height: 154px;
+  padding: 18px;
+}
+
+.racha:first-child {
+  border-color: var(--coral);
+  color: white;
+  background: var(--coral);
+}
+
+.racha--mejor {
+  background: #f8e7ba;
+  border-color: #ecd393;
+}
+
+.racha--semana {
+  background: var(--menta);
+  border-color: #b9ddd3;
+}
+
+.racha--dias {
+  background: var(--azul-claro);
+  border-color: #c6dce9;
+}
+
+.racha__titulo {
+  min-height: 2.5em;
+  margin-bottom: 14px;
+  color: var(--tinta-suave);
+  font-size: 0.84rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.racha:first-child .racha__titulo {
+  color: #ffe9df;
+}
+
+.racha__numero {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 6vw, 3.3rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.racha__unidad {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.racha__icono {
+  font-family: system-ui, sans-serif;
+  font-size: 1.9rem;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.racha--semana .racha__numero {
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
+}
+
+.racha--semana .racha__icono {
+  font-size: 1.6rem;
+}
+
+.tarjeta,
+.sesiones {
+  margin-bottom: 12px;
+  padding: 24px;
+}
+
+.meses-destacados__lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mes-destacado {
+  border-left: 3px solid var(--mostaza);
+  padding: 4px 0 4px 14px;
+}
+
+.mes-destacado__titulo {
+  margin-bottom: 5px;
+  color: var(--tinta-suave);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.mes-destacado__valor {
+  margin-bottom: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.top-sesion,
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid var(--linea);
+}
+
+.top-sesion {
+  padding: 13px 0;
+}
+
+.top-sesion:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.top-sesion:last-child {
+  padding-bottom: 0;
+}
+
+.top-sesion__posicion {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--tinta);
+  background: var(--mostaza);
+  font-weight: 800;
+}
+
+.top-sesion__datos,
+.sesion > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.top-sesion__tema,
+.sesion__tema {
+  margin-bottom: 4px;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.top-sesion__fecha,
+.top-sesion__minutos,
+.sesion__fecha,
+.sesion__minutos,
+.vacio {
+  margin-bottom: 0;
+  color: var(--tinta-suave);
+  font-size: 0.88rem;
+}
+
+.top-sesion__minutos,
+.sesion__minutos {
+  flex-shrink: 0;
+  font-weight: 750;
+}
+
+.campo {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+input {
+  width: 100%;
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  padding: 12px 13px;
+  color: var(--tinta);
+  background: #fffefa;
+  font: inherit;
+  outline: none;
+}
+
+input:focus-visible {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 3px rgba(217, 104, 85, 0.2);
+}
+
+button {
+  width: 100%;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: white;
+  background: var(--tinta);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--coral-oscuro);
+}
+
+button:focus-visible {
+  outline: 3px solid rgba(217, 104, 85, 0.35);
+  outline-offset: 3px;
+}
+
+.sesion {
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.vacio {
+  padding: 4px 0 0;
+}
+
+@media (max-width: 680px) {
+  .rachas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .contenedor {
+    width: min(100% - 24px, 680px);
+    padding-top: 16px;
+  }
+
+  .encabezado {
+    padding: 26px 22px;
+    border-radius: 18px;
+  }
+
+  .encabezado::after {
+    right: 22px;
+    bottom: 18px;
+  }
+
+  .rachas,
+  .meses-destacados__lista {
+    grid-template-columns: 1fr;
+  }
+
+  .racha {
+    min-height: auto;
+  }
+
+  .tarjeta,
+  .sesiones {
+    padding: 20px;
+    border-radius: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
