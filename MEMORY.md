@@ -2,6 +2,7 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 ## Estado actual
 - El proyecto está en `/home/emiligl/projects/MyStudyDiary`.
+- Repositorio remoto privado: `https://github.com/emiligl/MyStudyDiary`.
 - v1 funcionando: registrar sesiones (fecha, tema, minutos), racha actual, mejor racha, top 3 de sesiones más largas, minutos semanales, días estudiados del mes, meses destacados y lista de sesiones.
 - Datos en localStorage con la clave `diario-de-estudio-sesiones`; cada sesión usa `fecha`, `tema`, `minutos` y `creadaEn`.
 ## Decisiones (y por qué)
