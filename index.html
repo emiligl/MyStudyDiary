@@ -33,6 +33,56 @@
       </div>
     </section>
 
+    <section class="tarjeta mapa-calor" aria-labelledby="titulo-mapa-calor">
+      <div class="mapa-calor__cabecera">
+        <div>
+          <p class="mapa-calor__etiqueta">Tu constancia</p>
+          <h2 id="titulo-mapa-calor">Mapa de estudio</h2>
+        </div>
+        <p class="mapa-calor__periodo">Últimas 12 semanas</p>
+      </div>
+
+      <div class="mapa-calor__tabla">
+        <div class="mapa-calor__meses" aria-hidden="true"></div>
+        <div class="mapa-calor__dias" aria-hidden="true">
+          <span>L</span>
+          <span>M</span>
+          <span>X</span>
+          <span>J</span>
+          <span>V</span>
+          <span>S</span>
+          <span>D</span>
+        </div>
+        <div id="mapa-calor" class="mapa-calor__grid" role="grid" aria-label="Actividad de estudio de las últimas 12 semanas"></div>
+      </div>
+
+      <div class="mapa-calor__pie">
+        <div class="mapa-calor__leyenda" aria-label="Leyenda de intensidad">
+          <span>Menos</span>
+          <span class="leyenda__muestra nivel-0" aria-label="Sin estudiar"></span>
+          <span class="leyenda__muestra nivel-1" aria-label="Nivel 1"></span>
+          <span class="leyenda__muestra nivel-2" aria-label="Nivel 2"></span>
+          <span class="leyenda__muestra nivel-3" aria-label="Nivel 3"></span>
+          <span class="leyenda__muestra nivel-4" aria-label="Nivel 4"></span>
+          <span>Más</span>
+        </div>
+        <p id="detalle-mapa-calor" class="mapa-calor__detalle" role="status" aria-live="polite">Selecciona un día para ver sus minutos.</p>
+      </div>
+    </section>
+
+    <section class="tarjeta informe" aria-labelledby="titulo-informe">
+      <h2 id="titulo-informe">Informe mensual</h2>
+      <p class="informe__ayuda">Elige un mes con sesiones para exportar su informe completo.</p>
+      <div class="informe__controles">
+        <div class="campo">
+          <label for="mes-informe">Mes</label>
+          <select id="mes-informe" name="mes-informe" aria-describedby="estado-informe" disabled></select>
+        </div>
+        <button type="button" id="exportar-informe" disabled>Exportar informe</button>
+      </div>
+      <p id="estado-informe" class="informe__estado" role="status" aria-live="polite"></p>
+    </section>
+
     <section class="tarjeta meses-destacados" aria-labelledby="titulo-meses-destacados">
       <h2 id="titulo-meses-destacados">Meses destacados</h2>
       <div class="meses-destacados__lista">

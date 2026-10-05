@@ -3,7 +3,7 @@
 ## Ejecución y estructura
 
 - Aplicación estática: `index.html` es la entrada y carga `styles.css` y `app.js`.
-- Solo HTML, CSS y JavaScript nativos; no hay npm, dependencias, build, servidor ni tests/lint.
+- Solo HTML, CSS y JavaScript nativos; no hay npm, dependencias, build, servidor ni lint. Los tests usan solo el runner integrado de Node (`node --test`).
 - Debe funcionar abriendo `index.html` con doble clic (`file://`): no usar módulos ES, `fetch` local ni APIs que requieran servidor.
 - El comando `.opencode/commands/feature.md` exige plan antes de implementar nuevas funcionalidades.
 
@@ -22,6 +22,6 @@
 ## Cambios y verificación
 
 - Mantén la interfaz en español, el diseño responsive y los cambios pequeños; no añadas funcionalidades no solicitadas.
-- Antes de empezar lee `MEMORY.md`; al terminar actualízalo con el estado y decisiones relevantes, sin datos sensibles.
-- No hay tests automáticos. Después de cada cambio, verifica con el MCP de Chrome DevTools: abre `index.html`, prueba la funcionalidad, revisa la consola y comprueba la vista móvil.
+- Antes de empezar lee `docs/constitution.md`, todas las specs activas de `docs/` y `MEMORY.md`; al terminar actualiza `MEMORY.md` con el estado y decisiones relevantes, sin datos sensibles.
+- Los tests automáticos existentes usan solo el runner integrado de Node; ejecútalos con `node --test`. Después de cada cambio, verifica con el MCP de Chrome DevTools: abre `index.html`, prueba la funcionalidad, revisa la consola y comprueba la vista móvil.
 - Verifica manualmente abriendo `index.html` en un navegador. Para borrar los datos, elimina en DevTools → Application → Local Storage la clave `diario-de-estudio-sesiones`.
