@@ -95,7 +95,7 @@ h2 {
 
 .rachas {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 12px;
 }
@@ -123,11 +123,6 @@ h2 {
 .racha--mejor {
   background: #f8e7ba;
   border-color: #ecd393;
-}
-
-.racha--semana {
-  background: var(--menta);
-  border-color: #b9ddd3;
 }
 
 .racha--dias {
@@ -173,14 +168,6 @@ h2 {
   font-size: 1.9rem;
   letter-spacing: 0;
   line-height: 1;
-}
-
-.racha--semana .racha__numero {
-  font-size: clamp(1.9rem, 5vw, 2.8rem);
-}
-
-.racha--semana .racha__icono {
-  font-size: 1.6rem;
 }
 
 .tarjeta,
@@ -422,6 +409,103 @@ button:disabled:hover {
   font-weight: 500;
 }
 
+.objetivo__invitacion {
+  margin-bottom: 18px;
+  color: var(--tinta-suave);
+  line-height: 1.5;
+}
+
+.objetivo__progreso-zona {
+  margin-bottom: 20px;
+}
+
+.objetivo__progreso {
+  margin-bottom: 10px;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.objetivo__barra {
+  width: 100%;
+  max-width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--menta);
+  overflow: hidden;
+}
+
+.objetivo__barra-relleno {
+  display: block;
+  width: 0;
+  max-width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--coral);
+  transition: width 0.25s ease;
+}
+
+.objetivo__cumplido {
+  display: inline-block;
+  max-width: 100%;
+  margin: 12px 0 0;
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #104d43;
+  background: var(--menta);
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.objetivo__cumplido[hidden] {
+  display: none;
+}
+
+.objetivo__controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.objetivo__controles .campo {
+  min-width: 0;
+  flex: 1 1 180px;
+  margin-bottom: 0;
+}
+
+.objetivo__controles button {
+  width: auto;
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.objetivo__borrar {
+  border: 1px solid var(--linea);
+  color: var(--tinta);
+  background: transparent;
+}
+
+.objetivo__borrar:hover {
+  border-color: var(--coral-oscuro);
+  color: var(--coral-oscuro);
+  background: transparent;
+}
+
+.objetivo__estado {
+  min-height: 1.2em;
+  margin: 14px 0 0;
+  color: var(--coral-oscuro);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.objetivo__estado:empty {
+  min-height: 0;
+  margin-top: 0;
+}
+
 .meses-destacados__lista {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -611,6 +695,19 @@ button:focus-visible {
   }
 
   .informe__controles button {
+    width: 100%;
+  }
+
+  .objetivo__controles {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .objetivo__controles .campo {
+    flex: 0 0 auto;
+  }
+
+  .objetivo__controles button {
     width: 100%;
   }
 

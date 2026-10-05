@@ -1,4 +1,5 @@
 const CLAVE_SESIONES = "diario-de-estudio-sesiones";
+const CLAVE_OBJETIVO = "diario-de-estudio-objetivo-semanal";
 
 const formulario = typeof document !== "undefined" ? document.querySelector("#formulario-sesion") : null;
 const campoFecha = typeof document !== "undefined" ? document.querySelector("#fecha") : null;
@@ -8,8 +9,17 @@ const listaSesiones = typeof document !== "undefined" ? document.querySelector("
 const topSesiones = typeof document !== "undefined" ? document.querySelector("#top-sesiones") : null;
 const elementoRacha = typeof document !== "undefined" ? document.querySelector("#racha") : null;
 const elementoMejorRacha = typeof document !== "undefined" ? document.querySelector("#mejor-racha") : null;
-const elementoMinutosSemana = typeof document !== "undefined" ? document.querySelector("#minutos-semana") : null;
 const elementoDiasMes = typeof document !== "undefined" ? document.querySelector("#dias-mes") : null;
+const elementoObjetivoInvitacion = typeof document !== "undefined" ? document.querySelector("#objetivo-invitacion") : null;
+const elementoObjetivoZonaProgreso = typeof document !== "undefined" ? document.querySelector("#objetivo-progreso-zona") : null;
+const elementoObjetivoProgreso = typeof document !== "undefined" ? document.querySelector("#objetivo-progreso") : null;
+const elementoObjetivoBarra = typeof document !== "undefined" ? document.querySelector("#objetivo-barra") : null;
+const elementoObjetivoBarraRelleno = typeof document !== "undefined" ? document.querySelector("#objetivo-barra-relleno") : null;
+const elementoObjetivoCumplido = typeof document !== "undefined" ? document.querySelector("#objetivo-cumplido") : null;
+const elementoObjetivoBorrar = typeof document !== "undefined" ? document.querySelector("#borrar-objetivo") : null;
+const campoObjetivoMinutos = typeof document !== "undefined" ? document.querySelector("#objetivo-minutos") : null;
+const botonGuardarObjetivo = typeof document !== "undefined" ? document.querySelector("#guardar-objetivo") : null;
+const estadoObjetivo = typeof document !== "undefined" ? document.querySelector("#objetivo-estado") : null;
 const elementoMesMasMinutos = typeof document !== "undefined" ? document.querySelector("#mes-mas-minutos") : null;
 const elementoMesMasCursos = typeof document !== "undefined" ? document.querySelector("#mes-mas-cursos") : null;
 const mapaCalor = typeof document !== "undefined" ? document.querySelector("#mapa-calor") : null;
@@ -26,12 +36,151 @@ function fechaLocal(fecha = new Date()) {
   return `${año}-${mes}-${dia}`;
 }
 
+function normalizarObjetivo(valor) {
+  const texto = typeof valor === "string" ? valor.trim() : valor;
+  const numero = typeof texto === "number" ? texto : Number(texto);
+  const esEnteroPositivo = Number.isFinite(numero) && Number.isInteger(numero) && numero > 0;
+
+  if (texto === "" || texto === null || texto === undefined || !esEnteroPositivo) {
+    return {
+      valido: false,
+      objetivo: null,
+      mensaje: "Introduce un número entero de minutos mayor que cero."
+    };
+  }
+
+  return { valido: true, objetivo: numero, mensaje: "" };
+}
+
 function esFechaValida(fecha) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) return false;
 
   const [año, mes, dia] = fecha.split("-").map(Number);
   const fechaComprobada = new Date(año, mes - 1, dia);
   return fechaLocal(fechaComprobada) === fecha;
+}
+
+function esFechaEnSemanaActual(fecha, hoy) {
+  if (!esFechaValida(fecha)) return false;
+
+  const inicio = obtenerInicioDeSemana(hoy);
+  const fin = new Date(inicio);
+  fin.setDate(inicio.getDate() + 6);
+
+  return fecha >= fechaLocal(inicio) && fecha <= fechaLocal(fin);
+}
+
+function esSesionContabilizada(sesion, hoy) {
+  if (!sesion || typeof sesion !== "object") return false;
+  if (!esFechaEnSemanaActual(sesion.fecha, hoy)) return false;
+  if (sesion.fecha > fechaLocal(hoy)) return false;
+  if (typeof sesion.minutos !== "number") return false;
+  return Number.isFinite(sesion.minutos) && sesion.minutos > 0;
+}
+
+function calcularMinutosSemanaActual(sesiones, hoy) {
+  if (!Array.isArray(sesiones)) return 0;
+
+  return sesiones
+    .filter((sesion) => esSesionContabilizada(sesion, hoy))
+    .reduce((total, sesion) => total + sesion.minutos, 0);
+}
+
+function obtenerAlmacenamiento(almacenamiento) {
+  if (almacenamiento) return almacenamiento;
+  return typeof localStorage !== "undefined" ? localStorage : null;
+}
+
+function leerObjetivo(almacenamiento) {
+  const almacen = obtenerAlmacenamiento(almacenamiento);
+  if (!almacen) return null;
+
+  let guardado;
+  try {
+    guardado = almacen.getItem(CLAVE_OBJETIVO);
+  } catch {
+    return null;
+  }
+
+  if (guardado === null || guardado === undefined) return null;
+
+  const resultado = normalizarObjetivo(guardado);
+  return resultado.valido ? resultado.objetivo : null;
+}
+
+function guardarObjetivo(almacenamiento, valor) {
+  const resultado = normalizarObjetivo(valor);
+  if (!resultado.valido) return resultado;
+
+  const almacen = obtenerAlmacenamiento(almacenamiento);
+  if (almacen) {
+    try {
+      almacen.setItem(CLAVE_OBJETIVO, String(resultado.objetivo));
+    } catch {
+      // El objetivo no se pudo conservar, pero la aplicación no debe fallar.
+    }
+  }
+
+  return resultado;
+}
+
+function borrarObjetivo(almacenamiento) {
+  const almacen = obtenerAlmacenamiento(almacenamiento);
+  if (!almacen) return;
+
+  try {
+    almacen.removeItem(CLAVE_OBJETIVO);
+  } catch {
+    // No hay nada que borrar o el almacenamiento no está disponible.
+  }
+}
+
+function calcularPorcentajeObjetivo(minutos, objetivo) {
+  if (typeof minutos !== "number" || !Number.isFinite(minutos) || minutos <= 0) return 0;
+  if (!Number.isInteger(objetivo) || objetivo <= 0) return 0;
+
+  const porcentaje = (minutos / objetivo) * 100;
+  return Math.min(100, Math.max(1, Math.ceil(porcentaje)));
+}
+
+function construirEstadoObjetivo(sesiones, objetivo, hoy) {
+  if (!Number.isInteger(objetivo) || objetivo <= 0) {
+    return Object.freeze({
+      hayObjetivo: false,
+      objetivo: null,
+      minutos: 0,
+      porcentaje: 0,
+      cumplido: false,
+      exceso: 0,
+      textoProgreso: "",
+      textoCumplido: "",
+      mensaje: "Fija un objetivo semanal de minutos para ver tu progreso."
+    });
+  }
+
+  const minutos = calcularMinutosSemanaActual(sesiones, hoy);
+  const porcentaje = calcularPorcentajeObjetivo(minutos, objetivo);
+  const cumplido = minutos >= objetivo;
+  const exceso = Math.max(0, minutos - objetivo);
+
+  let textoCumplido = "";
+  if (cumplido && exceso > 0) {
+    textoCumplido = `objetivo cumplido · ${exceso} minutos de exceso`;
+  } else if (cumplido) {
+    textoCumplido = "objetivo cumplido";
+  }
+
+  return Object.freeze({
+    hayObjetivo: true,
+    objetivo,
+    minutos,
+    porcentaje,
+    cumplido,
+    exceso,
+    textoProgreso: `llevas ${minutos} de ${objetivo} minutos`,
+    textoCumplido,
+    mensaje: ""
+  });
 }
 
 function esSesionValidaParaInforme(sesion, mes, hoy) {
@@ -103,6 +252,8 @@ function agruparMinutosPorTema(sesiones) {
   if (!Array.isArray(sesiones)) return temas;
 
   sesiones.forEach((sesion) => {
+    if (!sesion || typeof sesion !== "object") return;
+
     const clave = normalizarTema(sesion.tema);
     if (!temas.has(clave)) {
       const etiqueta = clave === "sin tema"
@@ -182,8 +333,11 @@ function agruparMinutosPorDiaMapa(sesiones, hoy, rango) {
   const hoyTexto = fechaLocal(hoy);
   const fechasDelRango = new Set(rango);
   const totales = new Map();
+  if (!Array.isArray(sesiones)) return totales;
 
   sesiones.forEach((sesion) => {
+    if (!esSesionConFecha(sesion)) return;
+
     const minutos = Number(sesion.minutos);
     if (
       !esFechaValida(sesion.fecha) ||
@@ -461,8 +615,24 @@ function guardarSesiones(sesiones) {
   localStorage.setItem(CLAVE_SESIONES, JSON.stringify(sesiones));
 }
 
+function esSesionConFecha(sesion) {
+  return Boolean(sesion) && typeof sesion === "object" && typeof sesion.fecha === "string";
+}
+
+function esSesionRegistrada(sesion) {
+  return esSesionConFecha(sesion) && typeof sesion.tema === "string";
+}
+
+function obtenerSesionesConFecha(sesiones) {
+  return Array.isArray(sesiones) ? sesiones.filter(esSesionConFecha) : [];
+}
+
+function obtenerSesionesRegistradas(sesiones) {
+  return Array.isArray(sesiones) ? sesiones.filter(esSesionRegistrada) : [];
+}
+
 function calcularRacha(sesiones) {
-  const diasEstudiados = new Set(sesiones.map((sesion) => sesion.fecha));
+  const diasEstudiados = new Set(obtenerSesionesConFecha(sesiones).map((sesion) => sesion.fecha));
   const hoy = new Date();
 
   // Si hoy está vacío, se empieza a contar desde ayer: el día aún no ha terminado.
@@ -482,7 +652,7 @@ function calcularRacha(sesiones) {
 function calcularMejorRacha(sesiones) {
   const hoy = fechaLocal();
   const diasEstudiados = [...new Set(
-    sesiones
+    obtenerSesionesConFecha(sesiones)
       .map((sesion) => sesion.fecha)
       .filter((fecha) => fecha <= hoy)
   )].sort();
@@ -512,27 +682,12 @@ function esDiaSiguiente(fechaAnterior, fechaSiguiente) {
   return fechaLocal(siguiente) === fechaSiguiente;
 }
 
-function calcularMinutosSemana(sesiones) {
-  const hoy = new Date();
-  const diasDesdeLunes = hoy.getDay() === 0 ? 6 : hoy.getDay() - 1;
-  const inicioSemana = new Date(hoy);
-  inicioSemana.setDate(hoy.getDate() - diasDesdeLunes);
-  const finSemana = new Date(inicioSemana);
-  finSemana.setDate(inicioSemana.getDate() + 6);
-  const primeraFecha = fechaLocal(inicioSemana);
-  const ultimaFecha = fechaLocal(finSemana);
-
-  return sesiones
-    .filter((sesion) => sesion.fecha >= primeraFecha && sesion.fecha <= ultimaFecha && sesion.fecha <= fechaLocal(hoy))
-    .reduce((total, sesion) => total + sesion.minutos, 0);
-}
-
 function calcularDiasEstudiadosMes(sesiones) {
   const hoy = fechaLocal();
   const mesActual = hoy.slice(0, 7);
 
   return new Set(
-    sesiones
+    obtenerSesionesConFecha(sesiones)
       .filter((sesion) => sesion.fecha.slice(0, 7) === mesActual && sesion.fecha <= hoy)
       .map((sesion) => sesion.fecha)
   ).size;
@@ -542,7 +697,7 @@ function obtenerMesesEstudiados(sesiones) {
   const hoy = fechaLocal();
   const meses = new Map();
 
-  sesiones
+  obtenerSesionesRegistradas(sesiones)
     .filter((sesion) => sesion.fecha <= hoy)
     .forEach((sesion) => {
       const mes = sesion.fecha.slice(0, 7);
@@ -690,7 +845,7 @@ function descargarInforme(html, nombre, entorno = obtenerEntornoNavegador()) {
 function obtenerTopSesiones(sesiones) {
   const hoy = fechaLocal();
 
-  return sesiones
+  return obtenerSesionesRegistradas(sesiones)
     .filter((sesion) => sesion.fecha <= hoy)
     .sort((a, b) => {
       if (b.minutos !== a.minutos) return b.minutos - a.minutos;
@@ -720,15 +875,48 @@ function mostrarTopSesiones(sesiones) {
   `).join("");
 }
 
+function mostrarObjetivo(estado) {
+  if (!elementoObjetivoInvitacion) return;
+
+  elementoObjetivoInvitacion.hidden = estado.hayObjetivo;
+  elementoObjetivoInvitacion.textContent = estado.mensaje || "";
+  elementoObjetivoZonaProgreso.hidden = !estado.hayObjetivo;
+  elementoObjetivoBorrar.hidden = !estado.hayObjetivo;
+
+  if (!estado.hayObjetivo) {
+    elementoObjetivoProgreso.textContent = "";
+    elementoObjetivoCumplido.hidden = true;
+    elementoObjetivoCumplido.textContent = "";
+    elementoObjetivoBarraRelleno.style.width = "0%";
+    elementoObjetivoBarra.setAttribute("aria-valuenow", "0");
+    elementoObjetivoBarra.removeAttribute("aria-valuetext");
+    return;
+  }
+
+  elementoObjetivoProgreso.textContent = estado.textoProgreso;
+  elementoObjetivoCumplido.textContent = estado.textoCumplido;
+  elementoObjetivoCumplido.hidden = !estado.textoCumplido;
+  elementoObjetivoBarraRelleno.style.width = `${estado.porcentaje}%`;
+  elementoObjetivoBarra.setAttribute("aria-valuenow", String(estado.porcentaje));
+  elementoObjetivoBarra.setAttribute("aria-valuetext", estado.textoProgreso);
+}
+
+function actualizarObjetivo() {
+  mostrarObjetivo(construirEstadoObjetivo(leerSesiones(), leerObjetivo(), new Date()));
+}
+
+function mostrarAvisoObjetivo(mensaje) {
+  if (estadoObjetivo) estadoObjetivo.textContent = mensaje;
+}
+
 function mostrarSesiones() {
-  const sesiones = leerSesiones().sort((a, b) => {
+  const sesiones = obtenerSesionesRegistradas(leerSesiones()).sort((a, b) => {
     if (a.fecha !== b.fecha) return b.fecha.localeCompare(a.fecha);
     return b.creadaEn - a.creadaEn;
   });
 
   elementoRacha.textContent = calcularRacha(sesiones);
   elementoMejorRacha.textContent = calcularMejorRacha(sesiones);
-  elementoMinutosSemana.textContent = calcularMinutosSemana(sesiones);
   elementoDiasMes.textContent = calcularDiasEstudiadosMes(sesiones);
   mostrarMesesDestacados(sesiones);
   mostrarMapaCalor(sesiones);
@@ -783,10 +971,48 @@ if (formulario) {
     guardarSesiones(sesiones);
     formulario.reset();
     campoFecha.value = fechaLocal();
-    mostrarSesiones();
+    try {
+      mostrarSesiones();
+    } catch {
+      // Un dato corrupto no debe impedir que el objetivo se actualice.
+    }
+    actualizarObjetivo();
   });
 
-  mostrarSesiones();
+  try {
+    mostrarSesiones();
+  } catch {
+    // Las estadísticas heredadas no deben abortar el resto del pintado.
+  }
+}
+
+if (elementoObjetivoInvitacion) {
+  actualizarObjetivo();
+}
+
+if (botonGuardarObjetivo) {
+  botonGuardarObjetivo.addEventListener("click", () => {
+    const resultado = normalizarObjetivo(campoObjetivoMinutos.value);
+
+    if (!resultado.valido) {
+      mostrarAvisoObjetivo(resultado.mensaje);
+      return;
+    }
+
+    guardarObjetivo(null, resultado.objetivo);
+    mostrarAvisoObjetivo("");
+    campoObjetivoMinutos.value = String(resultado.objetivo);
+    actualizarObjetivo();
+  });
+}
+
+if (elementoObjetivoBorrar) {
+  elementoObjetivoBorrar.addEventListener("click", () => {
+    borrarObjetivo();
+    mostrarAvisoObjetivo("");
+    campoObjetivoMinutos.value = "";
+    actualizarObjetivo();
+  });
 }
 
 if (botonExportarInforme) {
@@ -814,6 +1040,15 @@ if (mapaCalor) {
 
 if (typeof module !== "undefined") {
   module.exports = {
+    normalizarObjetivo,
+    esFechaEnSemanaActual,
+    esSesionContabilizada,
+    calcularMinutosSemanaActual,
+    calcularPorcentajeObjetivo,
+    leerObjetivo,
+    guardarObjetivo,
+    borrarObjetivo,
+    construirEstadoObjetivo,
     crearRangoMapa,
     esFechaValida,
     agruparMinutosPorDiaMapa,

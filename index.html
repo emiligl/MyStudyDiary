@@ -23,14 +23,42 @@
         <p id="titulo-mejor-racha" class="racha__titulo">Mejor racha</p>
         <p class="racha__numero"><span id="mejor-racha">0</span> <span class="racha__unidad">días</span> <span class="racha__icono" aria-hidden="true">🏆</span></p>
       </div>
-      <div class="racha racha--semana" aria-labelledby="titulo-minutos-semana">
-        <p id="titulo-minutos-semana" class="racha__titulo">Minutos esta semana</p>
-        <p class="racha__numero"><span id="minutos-semana">0</span> <span class="racha__unidad">min</span> <span class="racha__icono" aria-hidden="true">⏱️</span></p>
-      </div>
       <div class="racha racha--dias" aria-labelledby="titulo-dias-mes">
         <p id="titulo-dias-mes" class="racha__titulo">Días este mes</p>
         <p class="racha__numero"><span id="dias-mes">0</span> <span class="racha__unidad">días</span> <span class="racha__icono" aria-hidden="true">📅</span></p>
       </div>
+    </section>
+
+    <section class="tarjeta objetivo" aria-labelledby="titulo-objetivo">
+      <h2 id="titulo-objetivo">Objetivo semanal</h2>
+      <p id="objetivo-invitacion" class="objetivo__invitacion" role="status" aria-live="polite">Todavía no has fijado un objetivo. Escribe cuántos minutos quieres estudiar cada semana y pulsa «Guardar».</p>
+
+      <div id="objetivo-progreso-zona" class="objetivo__progreso-zona" hidden>
+        <p id="objetivo-progreso" class="objetivo__progreso"></p>
+        <div
+          id="objetivo-barra"
+          class="objetivo__barra"
+          role="progressbar"
+          aria-label="Progreso del objetivo semanal"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <span id="objetivo-barra-relleno" class="objetivo__barra-relleno"></span>
+        </div>
+        <p id="objetivo-cumplido" class="objetivo__cumplido" hidden></p>
+      </div>
+
+      <div class="objetivo__controles">
+        <div class="campo">
+          <label for="objetivo-minutos">Minutos por semana</label>
+          <input type="number" id="objetivo-minutos" name="objetivo-minutos" min="1" step="1" placeholder="Ej. 300" inputmode="numeric">
+        </div>
+        <button type="button" id="guardar-objetivo">Guardar</button>
+        <button type="button" id="borrar-objetivo" class="objetivo__borrar" hidden>Borrar objetivo</button>
+      </div>
+
+      <p id="objetivo-estado" class="objetivo__estado" role="status" aria-live="polite"></p>
     </section>
 
     <section class="tarjeta mapa-calor" aria-labelledby="titulo-mapa-calor">

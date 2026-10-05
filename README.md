@@ -8,9 +8,15 @@ Web estática para registrar sesiones de estudio y seguir el progreso diario.
 - Registrar una sesión con fecha, tema y minutos.
 - Consultar la racha actual (días consecutivos estudiados) y la mejor racha histórica.
 - Ver las tres sesiones más largas.
-- Consultar los minutos estudiados esta semana (lunes a domingo).
+- Consultar los minutos estudiados de la semana actual (lunes a domingo) dentro de la tarjeta del objetivo.
 - Ver cuántos días se ha estudiado durante el mes actual.
 - Consultar el mes con más minutos y el mes con más temas estudiados.
+
+### Objetivo semanal
+- Fijar un objetivo único de minutos por semana (número entero mayor que cero) que se repite cada semana, incluidas las futuras.
+- Ver el progreso en una tarjeta con barra y el texto «llevas X de Y minutos».
+- Reconocer el objetivo alcanzado o superado con «objetivo cumplido» y los minutos de exceso.
+- Editar o borrar el objetivo cuando se necesite, sin alterar las sesiones registradas.
 
 ### Visualización y análisis
 - **Mapa de calor**: 12 semanas de lunes a domingo con 4 niveles de intensidad según los minutos de cada día.
@@ -29,20 +35,21 @@ Stack simple y sin dependencias: **HTML, CSS y JavaScript nativos**.
 
 ### Estructura
 - `index.html`: estructura y composición de componentes.
-- `styles.css`: diseño responsive (mobile-first), mapa de calor, informe e impresión.
-- `app.js`: lógica pura (funciones sin efectos secundarios), estadísticas, mapa de calor, informe y persistencia.
+- `styles.css`: diseño responsive (mobile-first), mapa de calor, objetivo semanal, informe e impresión.
+- `app.js`: lógica pura (funciones sin efectos secundarios), estadísticas, mapa de calor, informe, objetivo semanal y persistencia.
 
 ### Desarrollo y pruebas
-Ejecuta `node --test` para lanzar la suite de 66 tests automáticos (requiere Node, pero la aplicación no lo necesita).
+Ejecuta `node --test` para lanzar la suite de 144 tests automáticos (requiere Node, pero la aplicación no lo necesita).
 
 ```bash
 node --test
-# Resultado: 66 tests, 66 pass, 0 fail
+# Resultado: 144 tests, 144 pass, 0 fail
 ```
 
 Los tests cubren:
 - Validación y filtrado de sesiones (fechas locales, exclusión de futuros/inválidos).
 - Cálculo de estadísticas (rachas, máximos, promedios, agrupaciones).
+- Normalización del objetivo, sesiones contabilizadas, minutos de la semana, llenado de la barra, estado del progreso y persistencia del objetivo.
 - Generación de mapa de calor (niveles relativos, estructura HTML).
 - Modelo y HTML del informe (resumen, métricas, distribución, temas, detalle).
 - Descarga y manejo de errores.
@@ -54,10 +61,12 @@ Las sesiones se guardan en `localStorage` con la clave `diario-de-estudio-sesion
 { "fecha": "AAAA-MM-DD", "tema": "string", "minutos": number, "creadaEn": timestamp }
 ```
 
+El objetivo semanal se guarda aparte en `localStorage` con la clave `diario-de-estudio-objetivo-semanal` (un entero de minutos como texto).
+
 Notas:
 - Las fechas siempre son locales; no se usan `toISOString()` ni UTC.
-- Los datos nunca se modifican al generar estadísticas o exportar (inmutabilidad).
-- Las funciones derivadas (racha, top 3, promedios, mejores meses) se recalculan cada vez, nunca se persisten.
+- Los datos nunca se modifican al generar estadísticas o exportar (inmutabilidad), ni al fijar, editar o borrar el objetivo.
+- Las funciones derivadas (racha, top 3, promedios, mejores meses, minutos de la semana y progreso del objetivo) se recalculan cada vez, nunca se persisten.
 
 ## Principios del proyecto
 
